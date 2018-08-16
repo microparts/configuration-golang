@@ -2,16 +2,15 @@
 
 [![pipeline status](https://gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg/badges/master/pipeline.svg)](https://gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg/commits/master) [![coverage report](https://gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg/badges/master/coverage.svg)](https://gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg/commits/master)
 
-Читатель yaml конфигураций по спецификации https://confluence.teamc.io/pages/viewpage.action?pageId=4227704
+Читатель yaml конфигураций по [спецификации](https://confluence.teamc.io/pages/viewpage.action?pageId=4227704)
 
 ## Пример использования
 
 ```go
-// Пакет по работе с конфигом в приложении
 package main
 
 import (
-	"gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg"
+	"gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg.git"
 	"gopkg.in/yaml.v2"
 	"log"
 )
