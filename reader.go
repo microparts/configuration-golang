@@ -1,7 +1,6 @@
 package config
 
 import (
-	"flag"
 	"io/ioutil"
 	"log"
 	"os"
@@ -10,22 +9,16 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var (
-	stage     = "development"
-	cfgPath   = flag.String("conf", "./configuration", "Path to directory with configuration")
-	quietMode = flag.Bool("quiet", false, "Quiet mode")
-)
-
-// parseFlags Parse CLI flags.
-func parseFlags() {
-	flag.Parse()
-	iSay("Config path: `%v`", *cfgPath)
-}
+var stage string
 
 // ReadConfigs Reads yaml files from configuration directory with sub folders
 // as application stage and merges config files in one configuration per stage
-func ReadConfigs() ([]byte, error) {
-	parseFlags()
+func ReadConfigs(cfgPath string) ([]byte, error) {
+	if cfgPath == "" {
+		cfgPath = "./configuration"
+	}
+	iSay("Config path: `%v`", cfgPath)
+
 	getStage()
 
 	var (
@@ -33,7 +26,11 @@ func ReadConfigs() ([]byte, error) {
 		stageDir string
 	)
 
-	err := filepath.Walk(*cfgPath, func(path string, f os.FileInfo, err error) error {
+	err := filepath.Walk(cfgPath, func(path string, f os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
 		if f.IsDir() {
 			stageDir = f.Name()
 			return nil
@@ -52,14 +49,11 @@ func ReadConfigs() ([]byte, error) {
 	configs := make(map[string]interface{})
 	for folder, files := range fileList {
 		for _, file := range files {
-			configBytes, err := ioutil.ReadFile(*cfgPath + "/" + folder + "/" + file)
+			configBytes, _ := ioutil.ReadFile(cfgPath + "/" + folder + "/" + file)
 
 			var configFromFile map[string]interface{}
 
-			err = yaml.Unmarshal(configBytes, &configFromFile)
-			if err != nil {
-				return nil, err
-			}
+			yaml.Unmarshal(configBytes, &configFromFile)
 
 			var config interface{}
 			if configs[folder] == nil {
@@ -82,9 +76,9 @@ func ReadConfigs() ([]byte, error) {
 
 // iSay Logs in stdout when quiet mode is off
 func iSay(pattern string, args ...interface{}) {
-	if *quietMode == false {
-		log.Printf("[config] "+pattern, args)
-	}
+	// if quietMode == false {
+	log.Printf("[config] "+pattern, args)
+	// }
 }
 
 // mergeMaps Recursively merges interfaces
@@ -112,7 +106,6 @@ func mergeMaps(defaultMap interface{}, stageMap interface{}) interface{} {
 	case interface{}:
 		switch staMap := stageMap.(type) {
 		case map[interface{}]interface{}:
-
 			if defMap == nil {
 				result = staMap
 			}
@@ -139,10 +132,9 @@ func getMapsKeys(defMap map[interface{}]interface{}, staMap map[interface{}]inte
 }
 
 // getStage Load configuration for stage with fallback to 'development'
-func getStage() string {
-	stage := getEnv("STAGE", "development")
+func getStage() {
+	stage = getEnv("STAGE", "development")
 	iSay("Current stage: `%s`", stage)
-	return stage
 }
 
 // getEnv Getting var from ENV with fallback param on empty

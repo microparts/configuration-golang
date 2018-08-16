@@ -1,0 +1,6 @@
+defaults:
+  redis:
+    hostname: 127.0.0.1
+    password: ""
+    database: 0
+    port: 6379

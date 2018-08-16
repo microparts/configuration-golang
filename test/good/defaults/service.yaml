@@ -1,0 +1,7 @@
+defaults:
+  debug: false
+  log:
+    level: "warn"
+    format: "json"
+  host: "localhost"
+  port: "8080"

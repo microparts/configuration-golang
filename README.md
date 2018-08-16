@@ -5,6 +5,7 @@
 ## Пример использования
 
 ```go
+// Пакет по работе с конфигом в приложении
 package config
 
 import (
@@ -12,9 +13,11 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// Хранилище конфига приложения
 var Config *confStruct
 
-// confStruct file structure
+// Структура конфига. По этой структуре будет заполняться конфиг из файла. Всё, что будет 
+// лишнее в yaml, в структуру не зайдёт!
 type confStruct struct {
 	Log struct {
 		Level  string `yaml:"level"`
@@ -39,11 +42,15 @@ type confStruct struct {
 }
 
 func InitConfig() error {
+	// Читаем конфиг из папки. STAGE передаётся в env. Папка конфига, если переопределяется,
+	// передаётся во флагах CLI
 	configBytes, err := config.ReadConfigs()
 	if err != nil {
 		return err
 	}
 
+    // Успешно прочитав файл и получив слайс байтов, отдаём их на анмаршаллинг в структуру
+    // конфига приложения. 
 	return yaml.Unmarshal(configBytes, &Config)
 } 
 ```
