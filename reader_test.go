@@ -11,7 +11,7 @@ func TestReadConfigs(t *testing.T) {
 	t.Parallel()
 	t.Run("Success parsing", func(t *testing.T) {
 		os.Setenv("STAGE", "test")
-		configBytes, err := ReadConfigs("./test/good")
+		configBytes, err := ReadConfigs("./test/configuration")
 		os.Unsetenv("STAGE")
 		if !assert.NoError(t, err) {
 			t.FailNow()

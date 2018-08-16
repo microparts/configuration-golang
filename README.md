@@ -8,19 +8,19 @@
 
 ```go
 // Пакет по работе с конфигом в приложении
-package config
+package main
 
 import (
 	"gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg"
 	"gopkg.in/yaml.v2"
+	"log"
 )
 
-// Хранилище конфига приложения
-var Config *confStruct
 
 // Структура конфига. По этой структуре будет заполняться конфиг из файла. Всё, что будет 
 // лишнее в yaml, в структуру не зайдёт!
-type confStruct struct {
+// Учитывать то, что структура при вложенности должна быть реализована через `struct{}`
+type ConfigStruct struct {
 	Log struct {
 		Level  string `yaml:"level"`
 		Debug  bool   `yaml:"debug"`
@@ -43,16 +43,19 @@ type confStruct struct {
 	} `yaml:"ws"`
 }
 
-func InitConfig() error {
+func main() {
+	// Хранилище конфига приложения
+	
 	// Читаем конфиг из папки. STAGE передаётся в env. Папка конфига, если переопределяется,
 	// передаётся во флагах CLI
-	configBytes, err := config.ReadConfigs()
+	configBytes, err := config.ReadConfigs("./configuration")
 	if err != nil {
-		return err
+		log.Fatalf("Ошибка чтения конфига: %+v", err)
 	}
 
+    var Config ConfigStruct 
     // Успешно прочитав файл и получив слайс байтов, отдаём их на анмаршаллинг в структуру
     // конфига приложения. 
-	return yaml.Unmarshal(configBytes, &Config)
+	yaml.Unmarshal(configBytes, &Config)
 } 
 ```

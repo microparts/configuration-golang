@@ -104,16 +104,7 @@ func mergeMaps(defaultMap interface{}, stageMap interface{}) interface{} {
 			}
 		}
 	case interface{}:
-		switch staMap := stageMap.(type) {
-		case map[interface{}]interface{}:
-			if defMap == nil {
-				result = staMap
-			}
-		case interface{}:
-			return staMap
-		}
-	default:
-		log.Fatalf("[config] Config merging error: structures type are not match each other")
+		return stageMap
 	}
 
 	return result
