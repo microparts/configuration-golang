@@ -9,4 +9,4 @@ test:
   - docker
   script:
   - make image_test
-  - make test_in_docker
+  - make tests_in_docker
