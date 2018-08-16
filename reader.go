@@ -10,8 +10,6 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-type configMap map[interface{}]interface{}
-
 var (
 	stage     = "development"
 	cfgPath   = flag.String("conf", "./configuration", "Path to directory with configuration")
@@ -21,7 +19,7 @@ var (
 // parseFlags Parse CLI flags.
 func parseFlags() {
 	flag.Parse()
-	iSay("Config path: `%s`", cfgPath)
+	iSay("Config path: `%v`", *cfgPath)
 }
 
 // ReadConfigs Reads yaml files from configuration directory with sub folders
@@ -83,19 +81,19 @@ func ReadConfigs() ([]byte, error) {
 }
 
 // iSay Logs in stdout when quiet mode is off
-func iSay(pattern string, args ... interface{}) {
+func iSay(pattern string, args ...interface{}) {
 	if *quietMode == false {
 		log.Printf("[config] "+pattern, args)
 	}
 }
 
 // mergeMaps Recursively merges interfaces
-func mergeMaps(defaultMap interface{}, stageMap interface{}) (interface{}) {
-	result := make(configMap)
+func mergeMaps(defaultMap interface{}, stageMap interface{}) interface{} {
+	result := make(map[interface{}]interface{})
 	switch defMap := defaultMap.(type) {
-	case configMap:
+	case map[interface{}]interface{}:
 		switch staMap := stageMap.(type) {
-		case configMap:
+		case map[interface{}]interface{}:
 
 			keys := getMapsKeys(defMap, staMap)
 			for key := range keys {
@@ -113,7 +111,7 @@ func mergeMaps(defaultMap interface{}, stageMap interface{}) (interface{}) {
 		}
 	case interface{}:
 		switch staMap := stageMap.(type) {
-		case configMap:
+		case map[interface{}]interface{}:
 
 			if defMap == nil {
 				result = staMap
@@ -129,8 +127,8 @@ func mergeMaps(defaultMap interface{}, stageMap interface{}) (interface{}) {
 }
 
 // getMapsKeys Get config map keys slice
-func getMapsKeys(defMap configMap, staMap configMap) (configMap) {
-	keys := make(configMap)
+func getMapsKeys(defMap map[interface{}]interface{}, staMap map[interface{}]interface{}) map[interface{}]interface{} {
+	keys := make(map[interface{}]interface{})
 	for key := range defMap {
 		keys[key] = true
 	}
