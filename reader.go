@@ -33,18 +33,18 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 
 	err := filepath.Walk(cfgPath, func(path string, f os.FileInfo, err error) error {
 		pathLen := len(strings.Split(path, "/"))
-		iSay(`walk data:
-			path: %v
-			pathLen: %v
-			configPathLen: %v
-			isDir: %v
-			ext: %s`,
-			path,
-			pathLen,
-			configPathDepth,
-			f.IsDir(),
-			filepath.Ext(f.Name()),
-		)
+		// iSay(`walk data:
+		// 	path: %v
+		// 	pathLen: %v
+		// 	configPathLen: %v
+		// 	isDir: %v
+		// 	ext: %s`,
+		// 	path,
+		// 	pathLen,
+		// 	configPathDepth,
+		// 	f.IsDir(),
+		// 	filepath.Ext(f.Name()),
+		// )
 		if cfgPath == path {
 			configPathDepth = pathLen + 1
 			if strings.Contains(cfgPath, "./") {
