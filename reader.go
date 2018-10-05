@@ -1,12 +1,12 @@
 package config
 
 import (
+	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
-
-	"gopkg.in/yaml.v2"
+	"strings"
 )
 
 var stage string
@@ -19,19 +19,30 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 	}
 	iSay("Config path: `%v`", cfgPath)
 
+	if _, err := os.Stat(cfgPath); os.IsNotExist(err) {
+		return nil, err
+	}
+
 	getStage()
 
 	var (
-		fileList = map[string][]string{}
-		stageDir string
+		fileList        = map[string][]string{}
+		stageDir        string
+		configPathDepth int
 	)
 
 	err := filepath.Walk(cfgPath, func(path string, f os.FileInfo, err error) error {
-		if err != nil {
-			return err
+		pathLen := len(strings.Split(path, "/"))
+		if cfgPath == path {
+			configPathDepth = pathLen
+			return nil
 		}
 
-		if f.IsDir() {
+		if pathLen > configPathDepth+1 {
+			return filepath.SkipDir
+		}
+
+		if f.IsDir() && pathLen == configPathDepth {
 			stageDir = f.Name()
 			return nil
 		}
@@ -39,11 +50,14 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 		if filepath.Ext(f.Name()) == ".yaml" {
 			fileList[stageDir] = append(fileList[stageDir], f.Name())
 		}
+
 		return nil
 	})
 	if err != nil {
+		iSay("Some error while walking through config dir!: `%+v`", err)
 		return nil, err
 	}
+
 	iSay("Config files: `%+v`", fileList)
 
 	configs := make(map[string]interface{})
@@ -77,7 +91,7 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 // iSay Logs in stdout when quiet mode is off
 func iSay(pattern string, args ...interface{}) {
 	// if quietMode == false {
-	log.Printf("[config] "+pattern, args)
+	log.Printf("[config] "+pattern, args...)
 	// }
 }
 
