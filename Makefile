@@ -2,7 +2,7 @@ IMAGE = golang-pkg-test
 TEST_CONTAINER = docker run --rm -i --name golang-config $(IMAGE)
 
 deps: ## Get the dependencies
-	go get -t
+	@dep ensure
 
 race: ## Run data race detector
 	@go test -race ./...
