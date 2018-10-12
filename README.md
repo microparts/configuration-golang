@@ -47,7 +47,8 @@ func main() {
 	
 	// Читаем конфиг из папки. STAGE передаётся в env. Папка конфига, если переопределяется,
 	// передаётся во флагах CLI
-	configBytes, err := config.ReadConfigs("./configuration")
+	configPath := config.GetEnv("CONFIG_PATH", "./configuration")
+	configBytes, err := config.ReadConfigs(configPath)
 	if err != nil {
 		log.Fatalf("Ошибка чтения конфига: %+v", err)
 	}

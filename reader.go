@@ -153,12 +153,12 @@ func getMapsKeys(defMap map[interface{}]interface{}, staMap map[interface{}]inte
 
 // getStage Load configuration for stage with fallback to 'development'
 func getStage() {
-	stage = getEnv("STAGE", "development")
+	stage = GetEnv("STAGE", "development")
 	iSay("Current stage: `%s`", stage)
 }
 
-// getEnv Getting var from ENV with fallback param on empty
-func getEnv(key, fallback string) string {
+// GetEnv Getting var from ENV with fallback param on empty
+func GetEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
 		return value
 	}
