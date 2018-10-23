@@ -17,6 +17,7 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 	if cfgPath == "" {
 		cfgPath = "./configuration"
 	}
+	cfgPath = strings.TrimRight(cfgPath, "/") + "/"
 	iSay("Config path: `%v`", cfgPath)
 
 	if _, err := os.Stat(cfgPath); os.IsNotExist(err) {
@@ -33,18 +34,7 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 
 	err := filepath.Walk(cfgPath, func(path string, f os.FileInfo, err error) error {
 		pathLen := len(strings.Split(path, "/"))
-		// iSay(`walk data:
-		// 	path: %v
-		// 	pathLen: %v
-		// 	configPathLen: %v
-		// 	isDir: %v
-		// 	ext: %s`,
-		// 	path,
-		// 	pathLen,
-		// 	configPathDepth,
-		// 	f.IsDir(),
-		// 	filepath.Ext(f.Name()),
-		// )
+
 		if cfgPath == path {
 			configPathDepth = pathLen + 1
 			if strings.Contains(cfgPath, "./") {
@@ -74,6 +64,11 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 	}
 
 	iSay("Config files: `%+v`", fileList)
+
+    // check defaults config existance. Fall down if not
+	if _, ok := fileList["defaults"]; !ok || len(fileList["defaults"]) == 0 {
+		log.Fatal("[config] defaults config is not found! Fall down.")
+	}
 
 	configs := make(map[string]interface{})
 	for folder, files := range fileList {
