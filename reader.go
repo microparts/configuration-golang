@@ -17,7 +17,7 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 	if cfgPath == "" {
 		cfgPath = "./configuration"
 	}
-	cfgPath = strings.TrimRight(cfgPath, "/") + "/"
+	cfgPath = strings.TrimRight(cfgPath, "/")
 	iSay("Config path: `%v`", cfgPath)
 
 	if _, err := os.Stat(cfgPath); os.IsNotExist(err) {
