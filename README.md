@@ -1,24 +1,22 @@
 # golang-pkg
 
-[![pipeline status](https://gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg/badges/master/pipeline.svg)](https://gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg/commits/master) [![coverage report](https://gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg/badges/master/coverage.svg)](https://gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg/commits/master)
+Yaml config reader (based on [spec rules](https://confluence.teamc.io/pages/viewpage.action?pageId=4227704))
 
-Читатель yaml конфигураций по [спецификации](https://confluence.teamc.io/pages/viewpage.action?pageId=4227704)
-
-## Пример использования
+## Usage example
 
 ```go
 package main
 
 import (
-	"gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg.git"
+	"github.com/microparts/configuration-golang"
 	"gopkg.in/yaml.v2"
 	"log"
 )
 
 
-// Структура конфига. По этой структуре будет заполняться конфиг из файла. Всё, что будет 
-// лишнее в yaml, в структуру не зайдёт!
-// Учитывать то, что структура при вложенности должна быть реализована через `struct{}`
+// Your app config structure. This must be related to yaml config file structure. Everything that is not
+// in this struct will be passed and will not be processed.
+// Keep in mind that inheritance must be implemented with `struct{}`
 type ConfigStruct struct {
 	Log struct {
 		Level  string `yaml:"level"`
@@ -43,19 +41,19 @@ type ConfigStruct struct {
 }
 
 func main() {
-	// Хранилище конфига приложения
-	
-	// Читаем конфиг из папки. STAGE передаётся в env. Папка конфига, если переопределяется,
-	// передаётся во флагах CLI
+	// Reader accept config path as param. Commonly it stored like STAGE in ENV.
 	configPath := config.GetEnv("CONFIG_PATH", "./configuration")
+	// Reading ALL config files in defaults configuration folder and recursively merge them with STAGE configs
 	configBytes, err := config.ReadConfigs(configPath)
 	if err != nil {
-		log.Fatalf("Ошибка чтения конфига: %+v", err)
+		log.Fatalf("config reading error: %+v", err)
 	}
 
     var Config ConfigStruct 
-    // Успешно прочитав файл и получив слайс байтов, отдаём их на анмаршаллинг в структуру
-    // конфига приложения. 
-	yaml.Unmarshal(configBytes, &Config)
+    // unmarshal config into Config structure 
+	err = yaml.Unmarshal(configBytes, &Config)
+	if err != nil {
+        log.Fatalf("config unmarshal error: %+v", err)
+    }
 } 
 ```

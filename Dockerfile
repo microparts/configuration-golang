@@ -2,7 +2,7 @@
 FROM golang:alpine as build-env
 MAINTAINER Sergey Gladkovskiy <smgladkovskiy@gmail.com>
 
-ARG DEP_VERSION="0.4.1"
+ARG DEP_VERSION="0.5.0"
 
 RUN apk update \
  && apk add --no-cache \
@@ -12,6 +12,8 @@ RUN apk update \
     make \
     openssl \
     openssh-client \
+    gcc \
+    musl-dev \
  && curl -L -s https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 -o /bin/dep \
  && chmod +x /bin/dep \
  && rm -rf /var/cache/apk/* \
