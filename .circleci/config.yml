@@ -25,8 +25,9 @@ jobs:
       - run:
           name: tests
           command: |
-            mkdir -p /cfgs/defaults
-            mkdir -p /cfgs/test
+            sudo mkdir -p /cfgs/defaults
+            sudo mkdir -p /cfgs/test
+            sudo chown -R circleci:circleci /cfgs
             ln -s /go/src/gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg.git/test/configuration/defaults/* /cfgs/defaults/
             ln -s /go/src/gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg.git/test/configuration/test/* /cfgs/test/
             make tests
