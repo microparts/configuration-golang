@@ -10,8 +10,6 @@ import (
 	"strings"
 )
 
-var stage string
-
 // ReadConfigs Reads yaml files from configuration directory with sub folders
 // as application stage and merges config files in one configuration per stage
 func ReadConfigs(cfgPath string) ([]byte, error) {
@@ -25,7 +23,7 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 		return nil, err
 	}
 
-	getStage()
+	stage := getStage()
 
 	var (
 		fileList        = map[string][]string{}
@@ -105,9 +103,10 @@ func iSay(pattern string, args ...interface{}) {
 }
 
 // getStage Load configuration for stage with fallback to 'development'
-func getStage() {
+func getStage() (stage string) {
 	stage = GetEnv("STAGE", "development")
 	iSay("Current stage: `%s`", stage)
+	return
 }
 
 // GetEnv Getting var from ENV with fallback param on empty
