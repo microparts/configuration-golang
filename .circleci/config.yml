@@ -25,5 +25,7 @@ jobs:
       - run:
           name: tests
           command: |
+            ln -s /go/src/gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg.git/test/configuration/defaults/* /cfgs/defaults/
+            ln -s /go/src/gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg.git/test/configuration/test/* /cfgs/test/
             make tests
             make race
