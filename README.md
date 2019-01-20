@@ -1,8 +1,33 @@
-# golang-pkg
+Golang Microservice configuration module
+----------------------------------------
 
-Yaml config reader (based on [spec rules](https://confluence.teamc.io/pages/viewpage.action?pageId=4227704))
+Configuration module for microservices written on Go. Preserves [corporate standards for services configuration](https://confluence.teamc.io/pages/viewpage.action?pageId=4227704).
 
-## Usage example
+## Installation
+
+Using `go get`:
+
+    go get github.com/imdario/mergo
+    
+Using `dep`:
+
+    dep ensure -add github.com/microparts/configuration-golang
+
+Import in your configuration file
+
+    import (
+        "github.com/microparts/configuration-golang"
+    )
+     
+
+## Usage
+
+Some agreements:
+1. Configuration must be declared as struct and reveals yaml structure
+2. Default config folder: `./configuration`. If you need to override, pass your path in `ReadConfig` function
+3. Default stage is `development`. To override, set `STAGE` env variable
+ 
+Code example:
 
 ```go
 package main
