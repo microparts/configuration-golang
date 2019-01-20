@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/imdario/mergo"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
@@ -52,7 +53,7 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 			return nil
 		}
 
-		if filepath.Ext(f.Name()) == ".yaml" {
+		if filepath.Ext(f.Name()) == ".yaml" && (stageDir == "defaults" || stageDir == stage) {
 			fileList[stageDir] = append(fileList[stageDir], f.Name())
 		}
 
@@ -65,33 +66,31 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 
 	iSay("Config files: `%+v`", fileList)
 
-    // check defaults config existance. Fall down if not
+	// check defaults config existance. Fall down if not
 	if _, ok := fileList["defaults"]; !ok || len(fileList["defaults"]) == 0 {
 		log.Fatal("[config] defaults config is not found! Fall down.")
 	}
 
-	configs := make(map[string]interface{})
+	configs := make(map[string]map[string]interface{})
 	for folder, files := range fileList {
 		for _, file := range files {
 			configBytes, _ := ioutil.ReadFile(cfgPath + "/" + folder + "/" + file)
 
-			var configFromFile map[string]interface{}
+			var configFromFile map[string]map[string]interface{}
 
-			yaml.Unmarshal(configBytes, &configFromFile)
+			_ = yaml.Unmarshal(configBytes, &configFromFile)
 
-			var config interface{}
-			if configs[folder] == nil {
-				config = configFromFile[folder]
-			} else {
-				config = mergeMaps(configs[folder], configFromFile[folder])
-			}
-			configs[folder] = config
+			configs[folder] = configFromFile[folder]
 		}
 	}
 
-	var config = configs["defaults"]
-	if c, ok := configs[stage]; ok {
-		config = mergeMaps(config, c)
+	config := configs["defaults"]
+	c, ok := configs[stage]
+	if ok {
+		if err := mergo.Merge(&config, c, mergo.WithOverride, mergo.WithAppendSlice); err != nil {
+			log.Fatalf("config merging error: %s", err)
+		}
+
 		iSay("Stage `%s` config is loaded and merged with `defaults`", stage)
 	}
 
@@ -103,47 +102,6 @@ func iSay(pattern string, args ...interface{}) {
 	// if quietMode == false {
 	log.Printf("[config] "+pattern, args...)
 	// }
-}
-
-// mergeMaps Recursively merges interfaces
-func mergeMaps(defaultMap interface{}, stageMap interface{}) interface{} {
-	result := make(map[interface{}]interface{})
-	switch defMap := defaultMap.(type) {
-	case map[interface{}]interface{}:
-		switch staMap := stageMap.(type) {
-		case map[interface{}]interface{}:
-
-			keys := getMapsKeys(defMap, staMap)
-			for key := range keys {
-				defVal, defOk := defMap[key]
-				staVal, staOk := staMap[key]
-
-				if defOk && !staOk {
-					result[key] = defVal
-				} else if !defOk && staOk {
-					result[key] = staVal
-				} else {
-					result[key] = mergeMaps(defVal, staVal)
-				}
-			}
-		}
-	case interface{}:
-		return stageMap
-	}
-
-	return result
-}
-
-// getMapsKeys Get config map keys slice
-func getMapsKeys(defMap map[interface{}]interface{}, staMap map[interface{}]interface{}) map[interface{}]interface{} {
-	keys := make(map[interface{}]interface{})
-	for key := range defMap {
-		keys[key] = true
-	}
-	for key := range staMap {
-		keys[key] = true
-	}
-	return keys
 }
 
 // getStage Load configuration for stage with fallback to 'development'

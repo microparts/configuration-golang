@@ -1,0 +1,14 @@
+test:
+  hotelbook_params:
+    url: https://hotelbook.com/xml_endpoint
+    username: TESt_USERNAME
+    password: PASSWORD
+  logging: info
+  default_list:
+    - bar
+    - baz
+  databases:
+    redis:
+      master:
+        username: R_USER
+        password: R_PASS

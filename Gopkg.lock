@@ -10,6 +10,15 @@
   version = "v1.1.1"
 
 [[projects]]
+  branch = "slices_in_map_append_with_override"
+  digest = "1:638b01cf8cde0af24bfb283ebb53c2b59b6c6357d141cc4e7bb2c7737f4207dc"
+  name = "github.com/imdario/mergo"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "54bb0a6f1f6e9aebf8c573b01d9c44890c2c495b"
+  source = "github.com/smgladkovskiy/mergo"
+
+[[projects]]
   digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
@@ -37,6 +46,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/imdario/mergo",
     "github.com/stretchr/testify/assert",
     "gopkg.in/yaml.v2",
   ]

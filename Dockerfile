@@ -3,6 +3,7 @@ FROM golang:alpine as build-env
 MAINTAINER Sergey Gladkovskiy <smgladkovskiy@gmail.com>
 
 ARG DEP_VERSION="0.5.0"
+ENV IN_CONTAINER="true"
 
 RUN apk update \
  && apk add --no-cache \

@@ -1,0 +1,10 @@
+production:
+  hotelbook_params:
+    url: https://hotelbook.com/xml_endpoint
+    username: PROD_USERNAME
+    password: PASSWORD
+  databases:
+    redis:
+      master:
+        username: R_USER
+        password: R_PASS
