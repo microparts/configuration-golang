@@ -32,8 +32,9 @@ jobs:
             sudo chown -R circleci:circleci /cfgs
             ln -s ${CIRCLE_WORKING_DIRECTORY}/test/configuration/defaults/* /cfgs/defaults/
             ln -s ${CIRCLE_WORKING_DIRECTORY}/test/configuration/test/* /cfgs/test/
-            make tests | tee ${TEST_RESULTS}/go-test.out
             make race
+            trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
+            make tests | tee ${TEST_RESULTS}/go-test.out
 
       - store_artifacts: # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: /tmp/test-results
