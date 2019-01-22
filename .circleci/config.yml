@@ -3,6 +3,7 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.11
+    parallelism: 4
 
     # directory where steps are run. Path must conform to the Go Workspace requirements
     working_directory: /go/src/github.com/microparts/configuration-golang

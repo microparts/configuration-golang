@@ -1,13 +1,14 @@
 package config
 
 import (
-	"github.com/imdario/mergo"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/imdario/mergo"
+	"gopkg.in/yaml.v2"
 )
 
 // ReadConfigs Reads yaml files from configuration directory with sub folders
@@ -64,7 +65,7 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 
 	iSay("Config files: `%+v`", fileList)
 
-	// check defaults config existance. Fall down if not
+	// check defaults config existence. Fall down if not
 	if _, ok := fileList["defaults"]; !ok || len(fileList["defaults"]) == 0 {
 		log.Fatal("[config] defaults config is not found! Fall down.")
 	}
@@ -76,9 +77,20 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 
 			var configFromFile map[string]map[string]interface{}
 
-			_ = yaml.Unmarshal(configBytes, &configFromFile)
+			if err = yaml.Unmarshal(configBytes, &configFromFile); err != nil {
+				log.Fatalf("[config] %s %s config read fal! Fall down.", folder, file)
+			}
 
-			configs[folder] = configFromFile[folder]
+			if _, ok := configs[folder]; !ok {
+				configs[folder] = configFromFile[folder]
+				continue
+			}
+
+			cc := configs[folder]
+			if err := mergo.Merge(&cc, configFromFile[folder], mergo.WithOverride, mergo.WithAppendSlice); err != nil {
+				log.Fatalf("[config] merging files in folder error: %s", err)
+			}
+			configs[folder] = cc
 		}
 	}
 
@@ -86,11 +98,13 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 	c, ok := configs[stage]
 	if ok {
 		if err := mergo.Merge(&config, c, mergo.WithOverride, mergo.WithAppendSlice); err != nil {
-			log.Fatalf("config merging error: %s", err)
+			log.Fatalf("[config] merging error: %s", err)
 		}
 
 		iSay("Stage `%s` config is loaded and merged with `defaults`", stage)
 	}
+
+	iSay("merged config content: `%+v`", config)
 
 	return yaml.Marshal(config)
 }

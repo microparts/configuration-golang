@@ -1,7 +1,7 @@
 Golang Microservice configuration module
 ----------------------------------------
 
-[![CircleCI](https://circleci.com/gh/microparts/configuration-golang/tree/master.svg?style=svg)](https://circleci.com/gh/microparts/configuration-golang/tree/master)
+[![CircleCI](https://circleci.com/gh/microparts/configuration-golang/tree/master.svg?style=shield)](https://circleci.com/gh/microparts/configuration-golang/tree/master)
 
 
 Configuration module for microservices written on Go. Preserves [corporate standards for services configuration](https://confluence.teamc.io/pages/viewpage.action?pageId=4227704).
