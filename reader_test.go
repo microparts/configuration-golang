@@ -3,19 +3,15 @@ package config
 import (
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v2"
-	"os"
 	"testing"
 )
 
 func TestReadConfigs(t *testing.T) {
 	t.Run("Success parsing common dirs and files", func(t *testing.T) {
-		t.Parallel()
-		err := os.Setenv("STAGE", "test")
 		configBytes, err := ReadConfigs("./test/configuration")
 		if !assert.NoError(t, err) {
 			t.FailNow()
 		}
-		err = os.Unsetenv("STAGE")
 
 		type cfg struct {
 			Debug bool `yaml:"debug"`
@@ -46,13 +42,10 @@ func TestReadConfigs(t *testing.T) {
 		assert.EqualValues(t, refConfig, config)
 	})
 	t.Run("Success parsing complex dirs and files", func(t *testing.T) {
-		t.Parallel()
-		err := os.Setenv("STAGE", "test")
 		configBytes, err := ReadConfigs("./test/configuration2")
 		if !assert.NoError(t, err) {
 			t.FailNow()
 		}
-		err = os.Unsetenv("STAGE")
 
 		type hbParams struct {
 			AreaMapping map[string]string `yaml:"area_mapping"`
@@ -108,19 +101,14 @@ func TestReadConfigs(t *testing.T) {
 			}{Username: "R_USER", Password: "R_PASS"}}},
 		}
 
-		//log.Fatalf("DefaultList: %+v", config.DefaultList)
-
 		assert.EqualValues(t, refConfig, config)
 	})
 
 	t.Run("Success parsing symlinked files and dirs", func(t *testing.T) {
-		t.Parallel()
-		err := os.Setenv("STAGE", "test")
 		configBytes, err := ReadConfigs("./test/symnlinkedConfigs")
 		if !assert.NoError(t, err) {
 			t.FailNow()
 		}
-		err = os.Unsetenv("STAGE")
 
 		type cfg struct {
 			Debug bool `yaml:"debug"`
@@ -153,13 +141,10 @@ func TestReadConfigs(t *testing.T) {
 
 	if GetEnv("IN_CONTAINER", "") == "true" {
 		t.Run("Success parsing symlinked files and dirs in root", func(t *testing.T) {
-			t.Parallel()
-			err := os.Setenv("STAGE", "test")
 			configBytes, err := ReadConfigs("/cfgs")
 			if !assert.NoError(t, err) {
 				t.FailNow()
 			}
-			err = os.Unsetenv("STAGE")
 
 			type cfg struct {
 				Debug bool `yaml:"debug"`
@@ -192,7 +177,7 @@ func TestReadConfigs(t *testing.T) {
 	}
 
 	t.Run("Fail dir not found", func(t *testing.T) {
-		t.Parallel()
+
 		_, err := ReadConfigs("")
 		if !assert.Error(t, err) {
 			t.FailNow()

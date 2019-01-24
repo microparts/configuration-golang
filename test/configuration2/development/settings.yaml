@@ -1,4 +1,4 @@
-test:
+development:
   hotelbook_params:
     url: https://hotelbook.com/xml_endpoint
     username: TESt_USERNAME

@@ -11,7 +11,7 @@ jobs:
     environment: # environment variables for the build itself
       - IN_CONTAINER: true
       - DEP_VERSION: 0.5.0
-      - GOCACHE: "/tmp/go/cache"
+      - GOCACHE: /tmp/go/cache
       - TEST_RESULTS: /tmp/test-results # path to where test results will be saved
 
     steps:
@@ -35,8 +35,7 @@ jobs:
             ln -s ${CIRCLE_WORKING_DIRECTORY}/test/configuration/defaults/* /cfgs/defaults/
             ln -s ${CIRCLE_WORKING_DIRECTORY}/test/configuration/test/* /cfgs/test/
             make race
-            trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
-            make tests | tee ${TEST_RESULTS}/go-test.out
+            make coverage_cli | tee ${TEST_RESULTS}/go-test.out |  go-junit-report > ${TEST_RESULTS}/go-test-report.xml
 
       - store_artifacts: # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
           path: /tmp/test-results

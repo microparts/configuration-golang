@@ -20,12 +20,14 @@ RUN apk update \
  && rm -rf /var/cache/apk/* \
  && rm -rf /tmp/*
 
-COPY . /go/src/gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg.git
-WORKDIR /go/src/gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg.git
+ARG SRC="/go/src/github.com/microparts/configuration-golang"
+
+COPY . ${SRC}
+WORKDIR ${SRC}
 
 RUN mkdir -p /cfgs/defaults \
- && mkdir -p /cfgs/test \
- && ln -s /go/src/gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg.git/test/configuration/defaults/* /cfgs/defaults/ \
- && ln -s /go/src/gitlab.teamc.io/teamc.io/microservice/configuration/golang-pkg.git/test/configuration/test/* /cfgs/test/
+ && mkdir -p /cfgs/development \
+ && ln -s ${SRC}/test/configuration/defaults/* /cfgs/defaults/ \
+ && ln -s ${SRC}/test/configuration/development/* /cfgs/development/
 
 RUN make deps
