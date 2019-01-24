@@ -30,10 +30,10 @@ jobs:
           name: tests
           command: |
             sudo mkdir -p /cfgs/defaults
-            sudo mkdir -p /cfgs/test
+            sudo mkdir -p /cfgs/development
             sudo chown -R circleci:circleci /cfgs
             ln -s ${CIRCLE_WORKING_DIRECTORY}/test/configuration/defaults/* /cfgs/defaults/
-            ln -s ${CIRCLE_WORKING_DIRECTORY}/test/configuration/test/* /cfgs/test/
+            ln -s ${CIRCLE_WORKING_DIRECTORY}/test/configuration/development/* /cfgs/development/
             make race
             make coverage_cli | tee ${TEST_RESULTS}/go-test.out |  go-junit-report > ${TEST_RESULTS}/go-test-report.xml
 
