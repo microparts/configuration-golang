@@ -24,11 +24,6 @@
 #   go-tests = true
 #   unused-packages = true
 
-[[constraint]]
-  name = "github.com/imdario/mergo"
-  branch = "slices_in_map_append_with_override"
-  source = "github.com/smgladkovskiy/mergo"
-
 [prune]
   go-tests = true
   unused-packages = true

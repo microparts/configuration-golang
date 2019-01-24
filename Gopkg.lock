@@ -10,13 +10,12 @@
   version = "v1.1.1"
 
 [[projects]]
-  branch = "slices_in_map_append_with_override"
-  digest = "1:638b01cf8cde0af24bfb283ebb53c2b59b6c6357d141cc4e7bb2c7737f4207dc"
+  digest = "1:a0cefd27d12712af4b5018dc7046f245e1e3b5760e2e848c30b171b570708f9b"
   name = "github.com/imdario/mergo"
   packages = ["."]
   pruneopts = "UT"
-  revision = "54bb0a6f1f6e9aebf8c573b01d9c44890c2c495b"
-  source = "github.com/smgladkovskiy/mergo"
+  revision = "7c29201646fa3de8506f701213473dd407f19646"
+  version = "v0.3.7"
 
 [[projects]]
   digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
