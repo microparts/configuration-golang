@@ -63,13 +63,12 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 		return nil, err
 	}
 
-	iSay("Config files: `%+v`", fileList)
-
 	// check defaults config existence. Fall down if not
 	if _, ok := fileList["defaults"]; !ok || len(fileList["defaults"]) == 0 {
 		log.Fatal("[config] defaults config is not found! Fall down.")
 	}
 
+	fileListResult := make(map[string][]string)
 	configs := make(map[string]map[string]interface{})
 	for folder, files := range fileList {
 		for _, file := range files {
@@ -79,6 +78,11 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 
 			if err = yaml.Unmarshal(configBytes, &configFromFile); err != nil {
 				log.Fatalf("[config] %s %s config read fal! Fall down.", folder, file)
+			}
+
+			if _, ok := configFromFile[folder]; !ok {
+				iSay("File %s excluded from %s (it is not for this stage)!", file, folder)
+				continue
 			}
 
 			if _, ok := configs[folder]; !ok {
@@ -91,8 +95,12 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 				log.Fatalf("[config] merging files in folder error: %s", err)
 			}
 			configs[folder] = cc
+
+			fileListResult[folder] = append(fileListResult[folder], file)
 		}
 	}
+
+	iSay("Config files: `%+v`", fileListResult)
 
 	config := configs["defaults"]
 	c, ok := configs[stage]
@@ -103,8 +111,6 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 
 		iSay("Stage `%s` config is loaded and merged with `defaults`", stage)
 	}
-
-	iSay("merged config content: `%+v`", config)
 
 	return yaml.Marshal(config)
 }
