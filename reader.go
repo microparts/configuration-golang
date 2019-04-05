@@ -91,7 +91,7 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 			}
 
 			cc := configs[folder]
-			if err := mergo.Merge(&cc, configFromFile[folder], mergo.WithOverride, mergo.WithAppendSlice); err != nil {
+			if err := mergo.Merge(&cc, configFromFile[folder], mergo.WithOverride); err != nil {
 				log.Fatalf("[config] merging files in folder error: %s", err)
 			}
 			configs[folder] = cc
@@ -105,7 +105,7 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 	config := configs["defaults"]
 	c, ok := configs[stage]
 	if ok {
-		if err := mergo.Merge(&config, c, mergo.WithOverride, mergo.WithAppendSlice); err != nil {
+		if err := mergo.Merge(&config, c, mergo.WithOverride); err != nil {
 			log.Fatalf("[config] merging error: %s", err)
 		}
 
