@@ -1,9 +1,10 @@
 package config
 
 import (
+	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/yaml.v2"
-	"testing"
 )
 
 func TestReadConfigs(t *testing.T) {
@@ -81,7 +82,7 @@ func TestReadConfigs(t *testing.T) {
 				Username:    "TESt_USERNAME",
 				Password:    "PASSWORD",
 			},
-			DefaultList: []string{"foo", "bar", "baz"},
+			DefaultList: []string{"bar", "baz"},
 			Logging:     "info",
 			Databases: struct {
 				Redis struct {

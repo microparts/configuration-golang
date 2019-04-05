@@ -1,22 +1,15 @@
 # Dockerfile for test image
-FROM golang:alpine as build-env
+FROM golang:1.12.1-alpine as build-env
 MAINTAINER Sergey Gladkovskiy <smgladkovskiy@gmail.com>
 
-ARG DEP_VERSION="0.5.0"
-ENV IN_CONTAINER="true"
+ENV GO111MODULE=on
 
 RUN apk update \
  && apk add --no-cache \
-    ca-certificates \
     curl \
     git \
     make \
-    openssl \
     openssh-client \
-    gcc \
-    musl-dev \
- && curl -L -s https://github.com/golang/dep/releases/download/v${DEP_VERSION}/dep-linux-amd64 -o /bin/dep \
- && chmod +x /bin/dep \
  && rm -rf /var/cache/apk/* \
  && rm -rf /tmp/*
 
