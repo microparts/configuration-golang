@@ -10,7 +10,7 @@ jobs:
 
     environment: # environment variables for the build itself
       - IN_CONTAINER: true
-      - GO111MODULE: on
+      - GO111MODULE: "on"
       - GOCACHE: /tmp/go/cache
       - TEST_RESULTS: /tmp/test-results # path to where test results will be saved
 
@@ -20,8 +20,6 @@ jobs:
       - run:
           name: download-dep
           command: |
-            sudo apt-get update
-            sudo apt-get install make
             make deps
             go get github.com/jstemmer/go-junit-report
       - run:
