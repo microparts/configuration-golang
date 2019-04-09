@@ -72,12 +72,15 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 	configs := make(map[string]map[string]interface{})
 	for folder, files := range fileList {
 		for _, file := range files {
-			configBytes, _ := ioutil.ReadFile(cfgPath + "/" + folder + "/" + file)
+			configBytes, err := ioutil.ReadFile(cfgPath + "/" + folder + "/" + file)
+			if err != nil {
+				log.Fatalf("[config] Error reading config file %s: %v", cfgPath+"/"+folder+"/"+file, err)
+			}
 
 			var configFromFile map[string]map[string]interface{}
 
 			if err = yaml.Unmarshal(configBytes, &configFromFile); err != nil {
-				log.Fatalf("[config] %s %s config read fal! Fall down.", folder, file)
+				log.Fatalf("[config] %s %s config read fail! Fall down.", folder, file)
 			}
 
 			if _, ok := configFromFile[folder]; !ok {
