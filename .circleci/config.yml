@@ -8,24 +8,17 @@ jobs:
     docker:
       - image: circleci/golang:1.12
     parallelism: 4
-
-    # directory where steps are run. Path must conform to the Go Workspace requirements
-    working_directory: /go/src/github.com/microparts/configuration-golang
-
     environment: # environment variables for the build itself
       - IN_CONTAINER: true
-      - GO111MODULE: "on"
-      - GOCACHE: /tmp/go/cache
       - TEST_RESULTS: /tmp/test-results # path to where test results will be saved
 
     steps:
       - checkout
-      - run: mkdir -p ${TEST_RESULTS}
+      - run: go mod vendor
       - run:
-          name: download-dep
+          name: "Create a temp directory for artifacts"
           command: |
-            make deps
-            go get github.com/jstemmer/go-junit-report
+            mkdir -p ${TEST_RESULTS}
       - run:
           name: tests
           command: |
@@ -36,9 +29,9 @@ jobs:
             ln -s ${CIRCLE_WORKING_DIRECTORY}/test/configuration/development/* /cfgs/development/
             make race
             make tests
-            mv coverage.html /tmp/artifacts
-            mv c.out /tmp/artifacts
+            mv coverage.html ${TEST_RESULTS}
+            mv c.out ${TEST_RESULTS}
       - store_artifacts:
-          path: /tmp/artifacts
+          path: ${TEST_RESULTS}
       - codecov/upload:
-          file: /tmp/artifacts/*
+          file: ${TEST_RESULTS}/*
