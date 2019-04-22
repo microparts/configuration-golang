@@ -32,8 +32,8 @@ jobs:
             ln -s ${CIRCLE_WORKING_DIRECTORY}/test/configuration/development/* /cfgs/development/
             go test -coverprofile=c.out
             go tool cover -html=c.out -o coverage.html
-            mv coverage.html ${TEST_RESULTS}
-            mv c.out ${TEST_RESULTS}
+            mv coverage.html /tmp/artifacts
+            mv c.out /tmp/artifacts
       - store_artifacts:
           path: /tmp/artifacts
       - codecov/upload:
