@@ -12,7 +12,7 @@ jobs:
       - IN_CONTAINER: true
 
     # directory where steps are run. Path must conform to the Go Workspace requirements
-    working_directory: /app
+    working_directory: /go/src/github.com/microparts/configuration-golang
 
     steps:
       - checkout
