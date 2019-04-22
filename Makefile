@@ -8,7 +8,8 @@ race: ## Run data race detector
 	@go test -race ./...
 
 tests: ## Run application unit tests with coverage and generate global code coverage report
-	@go test -v ./... -parallel 4 -failfast -cover -coverprofile=coverage.out
+	go test -coverprofile=c.out
+	go tool cover -html=c.out -o coverage.html
 
 covercli: ## Generate code coverage report
 	@go tool cover -func=coverage.out
