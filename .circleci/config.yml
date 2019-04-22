@@ -10,7 +10,7 @@ jobs:
     parallelism: 4
     environment: # environment variables for the build itself
       - IN_CONTAINER: true
-      - GO111MODULE: on
+      - GO111MODULE: "on"
 
     # directory where steps are run. Path must conform to the Go Workspace requirements
     working_directory: /go/src/github.com/microparts/configuration-golang
