@@ -90,7 +90,6 @@ func ReadConfigs(cfgPath string) ([]byte, error) {
 
 			if _, ok := configs[folder]; !ok {
 				configs[folder] = configFromFile[folder]
-				continue
 			}
 
 			cc := configs[folder]
