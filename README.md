@@ -1,3 +1,5 @@
+This rrepo is **DEPRECATED**! Use https://github.com/spacetab-io/configuration-go instead.
+
 Golang Microservice configuration module
 ----------------------------------------
 
